@@ -1,12 +1,12 @@
-cmake_minimum_required(VERSION 3.10)
-project(a-chat-lib VERSION 1.0.0 LANGUAGES C)
+cmake_minimum_required(VERSION 3.15)
+project(a-chat-lib)
+
+# needed for zed
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(a-chat-lib
-    src/chat.c
-    src/message.c
+    include/server/server.h
+    src/server/server.c
 )
 
-target_include_directories(a-chat-lib PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-)
+target_include_directories(a-chat-lib PUBLIC include)
