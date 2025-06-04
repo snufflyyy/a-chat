@@ -6,7 +6,7 @@ a secure, end-to-end encrypted group messaging service
 
  - **purpose**: a-chat is a group messaging application that allows users to send and receive end-to-end encrypted messages
  - **scope**: users can host or join a secure session, and communicate using a tcp connection
- - **technologies**: c99, aes encryption (AES-256), posix sockets, and posix threads (pthreads)
+ - **technologies**: c99, aes encryption (AES-128), posix sockets, and posix threads (pthreads)
 
 ## requirements
 
