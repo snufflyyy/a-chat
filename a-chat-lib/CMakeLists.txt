@@ -5,7 +5,11 @@ project(a-chat-lib)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(a-chat-lib
+    include/log.h
     include/server/server.h
+    include/client/client.h
+    src/log.c
+    src/client/client.c
     src/server/server.c
 )
 
