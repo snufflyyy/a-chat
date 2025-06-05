@@ -1,7 +1,9 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
 #include <a-chat.h>
+#include <sys/socket.h>
 
 int main(int argc, char* argv[]) {
     switch (argc) {
@@ -14,12 +16,25 @@ int main(int argc, char* argv[]) {
                 }
 
                 a_chat_server_accept(server);
+
                 a_chat_server_close(server);
             } else if (strcmp(argv[1], "client") == 0) {
                 AChatClient* client = a_chat_client_create("127.0.0.1", A_CHAT_DEFAULT_PORT, "braden");
                 if (!client) {
                     fprintf(stderr, "ERROR: Failed to create client!\n");
                     return -1;
+                }
+
+                while (client->running) {
+                    char message[1024];
+                    fgets(message, sizeof(message), stdin);
+
+                    if (strcmp(message, "exit\n") == 0) {
+                        client->running = false;
+                        break;
+                    }
+
+                    send(client->socket, message, strlen(message), 0);
                 }
 
                 a_chat_client_close(client);

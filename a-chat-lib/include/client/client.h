@@ -1,8 +1,15 @@
 #pragma once
 
+#include <stdbool.h>
+#include <pthread.h>
+
 typedef struct AChatClient {
+    bool running;
+
     int socket;
     const char* username;
+
+    pthread_t receive_thread_id;
 } AChatClient;
 
 AChatClient* a_chat_client_create(const char* ip_address, const char* port, const char* username);

@@ -146,7 +146,9 @@ static void* a_chat_client_handler_thread(void* arguments) {
             char message[640];
             snprintf(message, sizeof(message), "%s has disconnected", thread_arguments->server->clientHandlers[thread_arguments->client_handler_index].username);
             a_chat_log_info(message);
-            a_chat_server_broadcast(thread_arguments->server, message);
+            char broadcast_buffer[640];
+            snprintf(broadcast_buffer, sizeof(broadcast_buffer), "[SERVER] %s", message);
+            a_chat_server_broadcast(thread_arguments->server, broadcast_buffer);
 
             break;
         } else if (bytes_received == -1) { // revc() return -1 if any errors occur and sets errno with the error message
@@ -159,7 +161,10 @@ static void* a_chat_client_handler_thread(void* arguments) {
 
         // this is just temporary
         buffer[bytes_received - 1] = '\0'; // - 1 because of new line
-        a_chat_server_broadcast(thread_arguments->server, buffer);
+
+        char broadcast_buffer[640];
+        snprintf(broadcast_buffer, sizeof(broadcast_buffer), "[%s] %s", thread_arguments->server->clientHandlers[thread_arguments->client_handler_index].username, buffer);
+        a_chat_server_broadcast(thread_arguments->server, broadcast_buffer);
         printf("%s\n", buffer);
     }
 
@@ -314,7 +319,9 @@ static void a_chat_client_handler_create(AChatServer* server) {
     }
 
     // log and broadcast that a new client has connected to the server
-    a_chat_server_broadcast(server, message); // this is at the end of the function because a_chat_server_broadcast uses the mutex
+    char broadcast_buffer[640];
+    snprintf(broadcast_buffer, sizeof(broadcast_buffer), "[SERVER] %s", message);
+    a_chat_server_broadcast(server, broadcast_buffer); // this is at the end of the function because a_chat_server_broadcast uses the mutex
 }
 
 void a_chat_server_accept(AChatServer* server) {
@@ -364,7 +371,6 @@ void a_chat_server_close(AChatServer* server) {
     for (int i = 0; i < server->number_of_clients; i++) {
         pthread_join(server->clientHandlers[i].thread_id, NULL);
     }
-
     if (pthread_mutex_unlock(&server->lock) != 0) {
         a_chat_log_error("Failed to unlock server's mutex while closing server");
     }
